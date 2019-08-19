@@ -21,17 +21,17 @@ router.post('/join', (req, res) => {
 
 router.post('/login', (req, res) => {
     console.log(req.body);
-    
+
     connection.query(`SELECT COUNT(*) as count FROM client
      where user_email = '${req.body.email}' and user_password = '${req.body.pw}'`, (err, result) => {
-         
-         if (err) throw err
-         else if(result[0].count === 1){
-             res.send('Login!');
-         } else {
-             res.send('Check your info!');
-         }
-     })
+
+            if (err) throw err
+            if (result[0].count === 1) {
+                res.send(true);
+            } else {
+                res.send(false);
+            }
+        })
 })
 
 module.exports = router;
