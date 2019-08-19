@@ -15,8 +15,30 @@ router.get('/getTable', (req, res) => {
 });
 
 router.post('/join', (req, res) => {
-    console.log(req.body);
-    res.send(req.body);
+
+    let flag = true
+    connection.query(`SELECT COUNT(*) as count FROM client
+    where user_email = '${req.body.email}' `, (err, result) => {
+
+            if (err) throw err
+            if (result[0].count === 1) {
+
+                flag = false
+            } else {
+                flag = true
+            }
+        })
+
+    if (flag) {
+        connection.query(`INSERT INTO client (user_email,user_firstName,user_lastName,user_password)
+         VALUES('${req.body.email}','${req.body.first}','${req.body.last}','${req.body.pw}')`, (err, result) => {
+                if (err) throw err;
+            })
+        
+        res.send(true)
+    } else {
+        res.send(false)
+    }
 })
 
 router.post('/login', (req, res) => {
