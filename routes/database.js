@@ -20,9 +20,10 @@ router.post('/join', (req, res) => {
 })
 
 router.post('/login', (req, res) => {
+    console.log(req.body);
+    
     connection.query(`SELECT COUNT(*) as count FROM client
-     where user_id = '${req.body.id}' and user_pw = '${req.body.pw}'`, (err, result) => {
-         console.log(result[0].count);
+     where user_email = '${req.body.email}' and user_password = '${req.body.pw}'`, (err, result) => {
          
          if (err) throw err
          else if(result[0].count === 1){
