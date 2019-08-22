@@ -5,15 +5,15 @@ var mysql = require('mysql');
 var dbconfig = require('../database/databaseConnect');
 var connection = mysql.createConnection(dbconfig);
 
-router.get('/getBoardList', (req, res) => {
-    connection.query('SELECT * FROM board', (err, result) => {
-        if (err) {
-            return err;
-        } else {
-            res.send(result);
-        }
-    })
-});
+// router.get('/getBoardList', (req, res) => {
+//     connection.query('SELECT * FROM board', (err, result) => {
+//         if (err) {
+//             return err;
+//         } else {
+//             res.send(result);
+//         }
+//     })
+// });
 
 router.get('/getBoardModify', (req, res) => {
 
@@ -68,5 +68,28 @@ router.post('/setBoard', (req, res) => {
 router.post('/setBoardDelete', (req, res) => {
 
 });
+
+//---------------------------------------------------------
+//kim reporting....
+router.get('/getBoardCount', (req, res) => {
+    connection.query('SELECT count(*) as count FROM board', (err, result) => {
+        let count = result[0].count.toString();
+        
+        (count !== 0) ? res.send(count) : res.send(0);
+    })
+ });
+
+ //get boardList by rownum indexing
+ router.get('/getBoardList', (req, res) => {
+    connection.query('select @rownum:=@rownum+1 as rownum, board_id, board_title, board_name, board_date from board, (select @rownum:=0) TMP order by rownum desc', (err, result) => {
+
+        if (err) {
+            return err;
+        } else {
+            return res.send(result);
+        }
+    })
+ });
+ //---------------------------------------------------------
 
 module.exports = router;
